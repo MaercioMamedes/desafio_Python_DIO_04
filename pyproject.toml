@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "desafio-python-dio-04"
+version = "0.1.0"
+description = ""
+authors = ["maercio <maerciomamedes@hotmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.110.2"
+uvicorn = "^0.29.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
