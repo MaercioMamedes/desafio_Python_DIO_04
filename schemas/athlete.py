@@ -28,5 +28,5 @@ class AthleteOutPut(Athlete, OutMixin):
 
 
 class AthleteUpdate(BaseSchema):
-    name: Annotated[Optional[str], Field(None, description='Nome do atleta', example='Joao', max_length=50)]
+    name: Annotated[Optional[str], Field(None, description='Nome do atleta', example="João", max_length=50)]
     date_birth: Annotated[Optional[date], Field(None, description='data de nascimento do atleta', example="24/02/25")]
