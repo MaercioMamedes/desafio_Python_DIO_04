@@ -1,13 +1,11 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        # mudar arquivo de variáveis de ambiente para raiz do projeto
-        env_file=".env",
-        env_file_encoding="utf-8",
+    DB_URL: str = Field(
+        default="postgresql+asyncpg://postgres:postgres@localhost/workoutDB"
     )
 
-    """"Environment Variables"""
 
-    DATABASE_URL: str
+settings = Settings()

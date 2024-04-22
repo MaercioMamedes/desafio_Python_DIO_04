@@ -4,9 +4,9 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from .settings import Settings
+from .settings import settings
 
-engine = create_async_engine(Settings().DATABASE_URL, echo=False)
+engine = create_async_engine(settings.DB_URL, echo=False)
 
 async_session = sessionmaker(
     engine, class_=AsyncSession, expire_on_commit=False
