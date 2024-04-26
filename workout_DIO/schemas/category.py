@@ -13,3 +13,5 @@ class CategoryInput(BaseSchema):
 
 class CategoryOutput(CategoryInput):
     id: Annotated[UUID4, Field(description="Identificador da categoria")]
+
+
