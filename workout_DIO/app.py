@@ -1,8 +1,6 @@
 from fastapi import FastAPI
+from workout_DIO.routers import api_router
 
-app = FastAPI()
 
-
-@app.get("/")
-def read_root():
-    return {"message": "olá Mundo"}
+app = FastAPI(title="WokroutAPI-DIO")
+app.include_router(api_router)

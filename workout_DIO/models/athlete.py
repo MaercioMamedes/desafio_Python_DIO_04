@@ -4,6 +4,7 @@ from sqlalchemy import Date, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base_model import BaseModel
+from .trainning_center import TrainningCenterModel
 
 
 class AthleteModel(BaseModel):
@@ -18,13 +19,9 @@ class AthleteModel(BaseModel):
     sex: Mapped[str] = mapped_column(
         String(1), nullable=False
     )  # Mudar para Enum
-    category: Mapped["CategoryModel"] = relationship(
-        back_populates="athlete", lazy="selectin"
-    )
+    category: Mapped["CategoryModel"] = relationship(back_populates="athlete", lazy="selectin")
     categorory_id: Mapped[int] = mapped_column(ForeignKey("categories.pk_id"))
-    trainning_center: Mapped["TrainningCenterModel"] = relationship(
-        back_populates="athlete", lazy="selectin"
-    )
+    trainning_center: Mapped["TrainningCenterModel"] = relationship(back_populates="athlete", lazy="selectin")
     trainning_center_id: Mapped[int] = mapped_column(
         ForeignKey("trainning_centers.pk_id")
     )

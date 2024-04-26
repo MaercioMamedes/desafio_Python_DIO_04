@@ -1,11 +1,11 @@
 from typing import Annotated
 
 from pydantic import UUID4, Field
-from workout_api.contrib.schemas import BaseSchema
+from workout_DIO.schemas.BaseShema import BaseSchema
 
 
 class CategoryInput(BaseSchema):
-    nome: Annotated[
+    name: Annotated[
         str,
         Field(description="Nome da categoria", example="Scale", max_length=10),
     ]
