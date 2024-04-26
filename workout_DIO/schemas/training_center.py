@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 from pydantic import UUID4, Field
 
@@ -36,6 +36,13 @@ class TranningCenterOutput(TranningCenterInput):
     id: Annotated[
         UUID4, Field(description="Identificador do centro de treinamento")
     ]
+
+
+class TrainningCenterPartialUpdate(BaseSchema):
+
+    name: Annotated[Optional[str], Field(None)]
+    address: Annotated[Optional[str], Field(None)]
+    owner: Annotated[Optional[str], Field(None)]
 
 
 class TrainningCenterAthlete(BaseSchema):

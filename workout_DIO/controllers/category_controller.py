@@ -82,6 +82,7 @@ async def delete(id_category: UUID4, db_session: DatabaseDependency):
         await db_session.delete(category)
         await db_session.commit()
 
+
 @router.put(
     path="/{id_category}",
     summary="Atualizar nome da Categoria",
@@ -91,8 +92,7 @@ async def put(
         id_category: UUID4,
         db_session: DatabaseDependency,
         category_in: CategoryInput = Body(...)
-        ) -> CategoryOutput:
-
+) -> CategoryOutput:
     category: CategoryOutput = (
         await db_session.execute(select(CategoryModel).filter_by(id=id_category))
     ).scalars().first()
