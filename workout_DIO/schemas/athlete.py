@@ -6,7 +6,9 @@ from pydantic import Field, PositiveFloat, UUID4
 from .BaseShema import BaseSchema
 from .category import CategoryAthlete, CategoryOutput
 from .OutMixin import OutMixin
-from .training_center import TrainningCenterAthleteInput, TranningCenterOutput
+from .training_center import (TrainningCenterAthleteInput,
+                              TranningCenterOutput,
+                              TrainningCenterOutPutList)
 
 
 class Athlete(BaseSchema):
@@ -43,6 +45,19 @@ class Athlete(BaseSchema):
 
 class AthleteInput(Athlete):
     pass
+
+
+class AthleteOutputList(BaseSchema):
+    name: Annotated[
+        str, Field(description="Nome do atleta", example="Joao", max_length=50)
+    ]
+    category: Annotated[
+        CategoryOutput, Field(description="categoria")
+    ]
+
+    trainning_center: Annotated[
+        TrainningCenterOutPutList, Field(description="Centro de Treinamento")
+    ]
 
 
 class AthleteOutPut(OutMixin):

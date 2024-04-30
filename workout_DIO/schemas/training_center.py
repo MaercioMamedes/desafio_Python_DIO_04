@@ -47,3 +47,8 @@ class TrainningCenterPartialUpdate(BaseSchema):
 
 class TrainningCenterAthleteInput(BaseSchema):
     id: Annotated[UUID4, Field(description="Identificador do Centro de Treinamento")]
+
+
+class TrainningCenterOutPutList(BaseSchema):
+    id: Annotated[UUID4, Field(description="Identificador do Centro de Treinamento")]
+    name: Annotated[str, Field(description="Nome do centro de Treinamento")]
