@@ -5,8 +5,7 @@ from sqlalchemy.future import select
 
 from workout_DIO.config.database import DatabaseDependency
 from workout_DIO.models.trainning_center import TrainningCenterModel
-from workout_DIO.schemas.training_center import (TrainningCenterAthlete,
-                                                 TranningCenterInput,
+from workout_DIO.schemas.training_center import (TranningCenterInput,
                                                  TranningCenterOutput,
                                                  TrainningCenterPartialUpdate)
 

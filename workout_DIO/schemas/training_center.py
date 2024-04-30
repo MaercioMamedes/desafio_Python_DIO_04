@@ -45,12 +45,5 @@ class TrainningCenterPartialUpdate(BaseSchema):
     owner: Annotated[Optional[str], Field(None)]
 
 
-class TrainningCenterAthlete(BaseSchema):
-    name: Annotated[
-        str,
-        Field(
-            description="Nome do centro de Treinamento",
-            example="CT King",
-            max_length=20,
-        ),
-    ]
+class TrainningCenterAthleteInput(BaseSchema):
+    id: Annotated[UUID4, Field(description="Identificador do Centro de Treinamento")]
