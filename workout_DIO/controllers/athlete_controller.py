@@ -1,5 +1,7 @@
 from typing import Dict, Any
 from uuid import uuid4
+
+from sqlalchemy.exc import IntegrityError
 from fastapi import APIRouter, Body, HTTPException, status
 from pydantic import UUID4
 from sqlalchemy.future import select
@@ -60,6 +62,17 @@ async def post(
             detail="ID daCentro de Treinamento inválido"
         )
 
+    """""  athlete_check_if_exist: AthleteModel = (
+        await db_session.execute(select(AthleteModel).filter_by(cpf=athlete_in.cpf))
+    ).scalars().first()
+
+       if athlete_check_if_exist:
+            raise HTTPException(
+                status_code=status.HTTP_303_SEE_OTHER,
+                detail="cpf já cadastrado"
+            )
+    """
+
     # Enviando cópia dos objetos category e trainning_center para transformá-los em dicionários
     # Mantendo os valores da requisição POST presenvados
     category_dict = model_dict_formater(copy(category))
@@ -79,8 +92,15 @@ async def post(
     athlete_model.categorory_id = category.pk_id
     athlete_model.trainning_center_id = trainning_center.pk_id
 
-    db_session.add(athlete_model)
-    await db_session.commit()
+    try:
+        db_session.add(athlete_model)
+        await db_session.commit()
+
+    except IntegrityError:
+        raise HTTPException(
+            status_code=status.HTTP_303_SEE_OTHER,
+            detail="cpf já cadastrado"
+        )
 
     return athlete
 
