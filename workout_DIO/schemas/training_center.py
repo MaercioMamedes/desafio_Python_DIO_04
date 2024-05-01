@@ -39,7 +39,6 @@ class TranningCenterOutput(TranningCenterInput):
 
 
 class TrainningCenterPartialUpdate(BaseSchema):
-
     name: Annotated[Optional[str], Field(None)]
     address: Annotated[Optional[str], Field(None)]
     owner: Annotated[Optional[str], Field(None)]

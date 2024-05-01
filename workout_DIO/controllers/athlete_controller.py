@@ -12,7 +12,6 @@ from copy import copy
 from workout_DIO.config.database import DatabaseDependency
 from workout_DIO.schemas.athlete import (AthleteInput,
                                          AthleteUpdate,
-                                         AthleteOutPutFinal,
                                          AthleteOutPut,
                                          AthleteOutputList)
 from workout_DIO.models.trainning_center import TrainningCenterModel
@@ -33,7 +32,6 @@ async def post(
         db_session: DatabaseDependency,
         athlete_in: AthleteInput = Body(...),
 ) -> AthleteOutPut:
-
     def model_dict_formater(obj: BaseModel) -> dict:
         """Função para transformar um objeto Category ou TrainningCenter em um
         Dicionário Python """
@@ -114,8 +112,8 @@ async def post(
 async def get(
         id_athlete: UUID4,
         db_sesssion: DatabaseDependency
-) -> AthleteOutPutFinal:
-    athlete: AthleteOutPutFinal = (
+) -> AthleteOutPut:
+    athlete: AthleteOutPut = (
         await db_sesssion.execute(select(AthleteModel).filter_by(id=id_athlete))
     ).scalars().first()
 
@@ -131,7 +129,6 @@ async def get(
 async def query(
         db_session: DatabaseDependency
 ) -> list[AthleteOutputList]:
-
     athlete_list: list[AthleteOutpuList] = (
         await db_session.execute(select(AthleteModel))
     ).scalars().all()
@@ -164,3 +161,51 @@ async def delete(
         await db_session.delete(athlete)
         await db_session.commit()
 
+
+@router.patch(
+    path="/{id_athlete}",
+    summary="Atualizar todos os campos do usuário",
+    status_code=status.HTTP_200_OK,
+    response_model=AthleteOutPut,
+)
+async def patch(
+        id_athlete: UUID4,
+        db_session: DatabaseDependency,
+        athlete_in: AthleteUpdate = Body()
+) -> AthleteOutPut:
+    athlete: AthleteOutPut = (
+        await db_session.execute(select(AthleteModel).filter_by(id=id_athlete))
+    ).scalars().first()
+
+    if not athlete:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuário não encontrado"
+        )
+
+    input_data_athlete = athlete_in.model_dump(exclude_unset=True)
+
+    pprint(input_data_athlete)
+
+    for key, value in input_data_athlete.items():
+
+        if key == "category":
+
+            category: CategoryModel = (
+                await db_session.execute(select(CategoryModel).filter_by(id=value['id']))
+            ).scalars().first()
+
+            athlete.__setattr__(kek, category)
+
+        elif key == "trainning_center":
+
+            trainning_center: TrainningCenterModel = (
+                await db_session.execute(select(TrainningCenterModel).filter_by(id=value['id']))
+            ).scalars().first()
+
+            athlete.__setattr__(key, trainning_center)
+
+    await db_session.commit()
+    await db_session.refresh(athlete)
+
+    return athlete
