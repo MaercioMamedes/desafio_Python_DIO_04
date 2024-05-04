@@ -4,7 +4,7 @@
 
 ### Desafio Final
 
-- adicionar query parameters nos endpoints
+- :white_check_mark: adicionar query parameters nos endpoints
     - atleta
         - nome
         - cpf

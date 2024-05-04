@@ -1,12 +1,12 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 from uuid import uuid4
 
 from sqlalchemy.exc import IntegrityError
-from fastapi import APIRouter, Body, HTTPException, status
+from fastapi import APIRouter, Body, HTTPException, status, Request
+from fastapi_pagination import LimitOffsetPage, paginate
 from pydantic import UUID4
 from sqlalchemy.future import select
 from datetime import datetime
-from pprint import pprint
 from copy import copy
 
 from workout_DIO.config.database import DatabaseDependency
@@ -18,6 +18,7 @@ from workout_DIO.models.trainning_center import TrainningCenterModel
 from workout_DIO.models.athlete import AthleteModel
 from workout_DIO.models.category import CategoryModel
 from workout_DIO.models.base_model import BaseModel
+
 
 router = APIRouter()
 
@@ -59,17 +60,6 @@ async def post(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="ID daCentro de Treinamento inválido"
         )
-
-    """""  athlete_check_if_exist: AthleteModel = (
-        await db_session.execute(select(AthleteModel).filter_by(cpf=athlete_in.cpf))
-    ).scalars().first()
-
-       if athlete_check_if_exist:
-            raise HTTPException(
-                status_code=status.HTTP_303_SEE_OTHER,
-                detail="cpf já cadastrado"
-            )
-    """
 
     # Enviando cópia dos objetos category e trainning_center para transformá-los em dicionários
     # Mantendo os valores da requisição POST presenvados
@@ -124,16 +114,39 @@ async def get(
     path="/",
     summary="Buscar todos os atletas cadastrados",
     status_code=status.HTTP_200_OK,
-    response_model=list[AthleteOutputList]
+    response_model=LimitOffsetPage[AthleteOutputList]
 )
 async def query(
-        db_session: DatabaseDependency
-) -> list[AthleteOutputList]:
-    athlete_list: list[AthleteOutpuList] = (
+        request: Request,
+        db_session: DatabaseDependency,
+        cpf: str = None,
+        name: str = None,
+
+
+) -> LimitOffsetPage[AthleteOutputList]:
+
+    allowed_params = {"name", "cpf", "limit", "offset"}
+    received_params = set(request.query_params.keys())
+    if not received_params.issubset(allowed_params):
+        raise HTTPException(status_code=400, detail="Parâmetros de consulta inválidos fornecidos.")
+
+    if cpf is not None:
+        athlete_list: List[AthleteOutputList] = (
+            await db_session.execute(select(AthleteModel).filter_by(cpf=cpf))
+        ).scalars().all()
+
+        return paginate(athlete_list)
+
+    if name is not None:
+        athlete_list: List[AthleteOutputList] = (
+            await db_session.execute(select(AthleteModel).where(AthleteModel.name.like(f'%{name}%')))
+        ).scalars().all()
+        return paginate(athlete_list)
+
+    athlete_list: List[AthleteOutpuList] = (
         await db_session.execute(select(AthleteModel))
     ).scalars().all()
-
-    return athlete_list
+    return paginate(athlete_list)
 
 
 @router.delete(
